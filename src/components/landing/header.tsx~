@@ -3,7 +3,7 @@ export default function Header() {
         <header className="bg-dark-grey py-4">
             <div className="container mx-auto flex justify-between items-center px-4">
                 <a href="/" className="text-2xl font-bold text-blue">
-                    <img src="/icon.png" alt="Learn Loop Logo" className="w-8 h-10 inline mr-2"/>
+                    <img src="/icon.png" alt="Learn Loop Logo" className="w-10 h-10 inline mr-2"/>
                     Learn Loop</a>
                 <nav>
                     <ul className="flex space-x-6">
