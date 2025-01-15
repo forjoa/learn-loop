@@ -3,5 +3,5 @@ interface Env {
 }
 
 export const env: Env = {
-    API: import.meta.env.API
+    API: import.meta.env.API || 'https://learn-loop-backend.onrender.com'
 }
