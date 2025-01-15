@@ -1,26 +1,35 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 
+interface FormData {
+    name: string;
+    email: string;
+    password: string;
+    role: 'TEACHER' | 'STUDENT';
+}
+
 export default function SignUp() {
-    const [ formData, setFormData ] = useState({
+    const [ formData, setFormData ] = useState<FormData>({
         name: '',
         email: '',
         password: '',
-        confirmPassword: '',
+        role: 'STUDENT',
     })
 
     const [ errors, setErrors ] = useState({
         name: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        role: ''
     })
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target
-        setFormData(prevState => ({
+    const handleChange = (
+        e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+    ) => {
+        const {name, value} = e.target as HTMLInputElement | HTMLSelectElement // Garantizamos que `e.target` tiene `name` y `value`
+        setFormData((prevState) => ({
             ...prevState,
-            [name]: value.trim()
+            [name]: value.trim(),
         }))
     }
 
@@ -29,20 +38,21 @@ export default function SignUp() {
             name: '',
             email: '',
             password: '',
-            confirmPassword: ''
+            role: ''
         }
         if (!formData.name.trim()) errors.name = 'Name is required'
         if (!formData.email.trim()) errors.email = 'Email is required'
         else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = 'Email is invalid'
         if (!formData.password) errors.password = 'Password is required'
         else if (formData.password.length < 6) errors.password = 'Password must be at least 6 characters'
-        if (formData.password !== formData.confirmPassword) errors.confirmPassword = 'Passwords do not match'
+        if (![ 'TEACHER', 'STUDENT' ].includes(formData.role)) errors.role = 'Invalid role selected'
         return errors
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const formErrors = validateForm()
+        console.log(formData)
         if (Object.keys(formErrors).length === 0) {
             console.log('Form submitted:', formData)
         } else {
@@ -119,23 +129,22 @@ export default function SignUp() {
                         </div>
 
                         <div>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-grey">
-                                Confirm Password
+                            <label htmlFor="role" className="block text-sm font-medium text-grey">
+                                Role
                             </label>
                             <div className="mt-1">
-                                <input
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    type="password"
-                                    autoComplete="new-password"
-                                    required
+                                <select
+                                    id="role"
+                                    name="role"
                                     className="appearance-none block w-full px-3 py-2 border border-medium-grey rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-grey text-white"
-                                    value={formData.confirmPassword}
+                                    value={formData.role}
                                     onChange={handleChange}
-                                />
+                                >
+                                    <option value="STUDENT">Student</option>
+                                    <option value="TEACHER">Teacher</option>
+                                </select>
                             </div>
-                            {errors.confirmPassword != '' &&
-                                <p className="mt-2 text-sm text-red">{errors.confirmPassword}</p>}
+                            {errors.role && <p className="mt-2 text-sm text-red">{errors.role}</p>}
                         </div>
 
                         <div>
