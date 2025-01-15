@@ -20,7 +20,7 @@ export default function SignUp() {
         const {name, value} = e.target
         setFormData(prevState => ({
             ...prevState,
-            [name]: value
+            [name]: value.trim()
         }))
     }
 
