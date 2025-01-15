@@ -2,7 +2,6 @@ import { ChangeEvent, FormEvent, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
 import { Link } from 'react-router-dom'
-import { env } from '../../utils/env.ts'
 
 interface LoginFormData {
     email: string;
@@ -42,7 +41,6 @@ export default function Login() {
         e.preventDefault()
 
         if (validateForm()) {
-            fetch(`${env.API}`)
             console.log('Form submitted:', formData)
         }
     }
