@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
+import { Link } from 'react-router-dom'
 
 interface LoginFormData {
     email: string;
@@ -105,9 +106,9 @@ export default function Login() {
                             </div>
 
                             <div className="text-sm">
-                                <a href="#" className="font-medium text-blue hover:text-blue-500">
+                                <Link to="#" className="font-medium text-blue hover:text-blue-500">
                                     Forgot your password?
-                                </a>
+                                </Link>
                             </div>
                         </div>
 
@@ -134,25 +135,25 @@ export default function Login() {
                         </div>
 
                         <div className="mt-6">
-                            <a
-                                href="/signup"
+                            <Link
+                                to="/signup"
                                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-blue bg-medium-grey hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue"
                             >
                                 Sign up
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <a
-                    href="/"
+                <Link
+                    to="/"
                     className="flex items-center justify-center text-sm text-grey hover:text-blue transition-colors"
                 >
                     <ArrowLeft className="mr-2 h-4 w-4"/>
                     Back to home
-                </a>
+                </Link>
             </div>
         </div>
     )

@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export default function Hero() {
     return (
         <section className="py-20 bg-gradient-to-b from-dark-grey to-black">
@@ -6,9 +8,9 @@ export default function Hero() {
                     <h1 className="text-4xl md:text-5xl font-bold mb-6">Share Knowledge, Empower Students</h1>
                     <p className="text-xl mb-8 text-grey">Learn Loop makes it easy for teachers to share content and
                         engage with students in a seamless learning environment.</p>
-                    <a href="/signup"
+                    <Link to="/signup"
                        className="bg-blue text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-opacity-80 transition-colors">Get
-                        Started</a>
+                        Started</Link>
                 </div>
                 <div className="md:w-1/2">
                     <img src="/online-student.png" alt="Learn Loop Platform" width={600} height={400}
