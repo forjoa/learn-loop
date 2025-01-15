@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface FormData {
     name: string;
@@ -16,13 +17,6 @@ export default function SignUp() {
         role: 'STUDENT',
     })
 
-    const [ errors, setErrors ] = useState({
-        name: '',
-        email: '',
-        password: '',
-        role: ''
-    })
-
     const handleChange = (
         e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
     ) => {
@@ -33,30 +27,43 @@ export default function SignUp() {
         }))
     }
 
-    const validateForm = () => {
-        const errors = {
-            name: '',
-            email: '',
-            password: '',
-            role: ''
+    const validateForm = (): boolean => {
+        let isValid = true
+
+        if (!formData.name.trim()) {
+            toast.error('Name is required')
+            isValid = false
         }
-        if (!formData.name.trim()) errors.name = 'Name is required'
-        if (!formData.email.trim()) errors.email = 'Email is required'
-        else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = 'Email is invalid'
-        if (!formData.password) errors.password = 'Password is required'
-        else if (formData.password.length < 6) errors.password = 'Password must be at least 6 characters'
-        if (![ 'TEACHER', 'STUDENT' ].includes(formData.role)) errors.role = 'Invalid role selected'
-        return errors
+
+        if (!formData.email.trim()) {
+            toast.error('Email is required')
+            isValid = false
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            toast.error('Email is invalid')
+            isValid = false
+        }
+
+        if (!formData.password) {
+            toast.error('Password is required')
+            isValid = false
+        } else if (formData.password.length < 6) {
+            toast.error('Password must be at least 6 characters')
+            isValid = false
+        }
+
+        if (![ 'TEACHER', 'STUDENT' ].includes(formData.role)) {
+            toast.error('Invalid role selected')
+            isValid = false
+        }
+
+        return isValid
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const formErrors = validateForm()
-        console.log(formData)
-        if (Object.keys(formErrors).length === 0) {
-            console.log('Form submitted:', formData)
-        } else {
-            setErrors(formErrors)
+
+        if (validateForm()) {
+            console.log(formData)
         }
     }
 
@@ -87,7 +94,6 @@ export default function SignUp() {
                                     onChange={handleChange}
                                 />
                             </div>
-                            {errors.name != '' && <p className="mt-2 text-sm text-red">{errors.name}</p>}
                         </div>
 
                         <div>
@@ -106,7 +112,6 @@ export default function SignUp() {
                                     onChange={handleChange}
                                 />
                             </div>
-                            {errors.email != '' && <p className="mt-2 text-sm text-red">{errors.email}</p>}
                         </div>
 
                         <div>
@@ -125,7 +130,6 @@ export default function SignUp() {
                                     onChange={handleChange}
                                 />
                             </div>
-                            {errors.password != '' && <p className="mt-2 text-sm text-red">{errors.password}</p>}
                         </div>
 
                         <div>
@@ -144,7 +148,6 @@ export default function SignUp() {
                                     <option value="TEACHER">Teacher</option>
                                 </select>
                             </div>
-                            {errors.role && <p className="mt-2 text-sm text-red">{errors.role}</p>}
                         </div>
 
                         <div>
