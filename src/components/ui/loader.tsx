@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useCycle } from 'framer-motion'
 
 const loadingContainer = {
     width: '4rem',
@@ -38,10 +38,12 @@ const loadingCircleVariants = {
 const loadingCircleTransition = {
     duration: 0.4,
     yoyo: Infinity,
-    ease: 'easeInOut'
+    ease: 'easeInOut',
 }
 
 const Loader = () => {
+    const [ animationCycle, toggleCycle ] = useCycle('start', 'end')
+
     return (
         <div>
             <div className="fixed w-full min-h-screen bg-black top-0 opacity-50 z-40"/>
@@ -49,8 +51,8 @@ const Loader = () => {
                 <motion.div
                     style={loadingContainer}
                     variants={loadingContainerVariants}
-                    initial="start"
-                    animate="end"
+                    animate={animationCycle}
+                    onAnimationComplete={() => toggleCycle()}
                 >
                     <motion.span
                         style={loadingCircle}
