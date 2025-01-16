@@ -78,7 +78,11 @@ export default function SignUp() {
             })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data)
+                    if (!data.success && data.message) {
+                        toast.error(data.message)
+                    } else {
+                        // todo: redirect to login page
+                    }
                     setLoading(false)
                 })
         }

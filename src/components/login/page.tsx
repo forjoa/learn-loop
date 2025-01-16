@@ -54,7 +54,11 @@ export default function Login() {
             })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data)
+                    if (!data.success && data.message) {
+                        toast.error(data.message)
+                    } else {
+                        // todo: save token in local and redirect
+                    }
                     setLoading(false)
                 })
         }
