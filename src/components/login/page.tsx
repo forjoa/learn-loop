@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { toast } from 'sonner'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { env } from '../../utils/env.ts'
 import Loader from '../ui/loader.tsx'
 
@@ -16,6 +16,7 @@ export default function Login() {
         password: '',
     })
     const [ loading, setLoading ] = useState(false)
+    const navigate = useNavigate()
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target
@@ -57,7 +58,8 @@ export default function Login() {
                     if (!data.success && data.message) {
                         toast.error(data.message)
                     } else {
-                        // todo: save token in local and redirect
+                        localStorage.setItem('token', data.token)
+                        navigate('/dashboard')
                     }
                     setLoading(false)
                 })
