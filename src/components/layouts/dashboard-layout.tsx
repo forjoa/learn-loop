@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Book, MessageCircle, Settings, Bell, Send, ChevronRight, CirclePlus } from "lucide-react"
 import { Outlet } from "react-router-dom"
 import { NavLink } from "react-router-dom"
+import Avatar from "../ui/avatar"
 
 const chats = [
     {
@@ -75,7 +76,7 @@ export default function DashboardLayout() {
             >
                 <div className="flex h-full">
                     <button
-                        className="absolute -left-12 top-3"
+                        className="absolute -left-12 top-6"
                         onClick={() => setIsChatOpen(!isChatOpen)}
                     >
                         <MessageCircle className="h-5 w-5" />
@@ -94,13 +95,15 @@ export default function DashboardLayout() {
                                 {chats.map((chat) => (
                                     <button key={chat.id} className="w-full flex p-4 rounded transition-all hover:bg-medium-gray">
                                         <div className="flex w-full items-start gap-3">
-                                            { /** avatar  */}
                                             <div className="flex flex-col w-full gap-1">
                                                 <div className="w-full flex items-center justify-between gap-2">
-                                                    <span className="text-sm font-medium">{chat.name.length > 20 ? chat.name.substring(0, 20) + '...' : chat.name}</span>
+                                                    <div className="flex items-center gap-2">
+                                                        <Avatar names={chat.name.split(', ')} />
+                                                        <span className="text-sm font-medium">{chat.name.length > 20 ? chat.name.substring(0, 15) + '...' : chat.name}</span>
+                                                    </div>
                                                     <span className="text-xs text-gray">{chat.time}</span>
                                                 </div>
-                                                <p className="text-xs text-gray text-start">{chat.message}</p>
+                                                <p className="text-xs text-gray text-start mt-1">{chat.message}</p>
                                             </div>
                                         </div>
                                     </button>
