@@ -1,8 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function Header() {
-    const [ isMenuOpen, setIsMenuOpen ] = useState(false)
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [token, setToken] = useState<string | null>()
+
+    useEffect(() => {
+        const tokenL = localStorage.getItem('token')
+
+        setToken(tokenL)
+    }, [])
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -12,7 +19,7 @@ export default function Header() {
         <header className="bg-dark-gray py-4">
             <div className="container mx-auto flex justify-between items-center px-4">
                 <Link to="/" className="text-2xl font-bold text-blue">
-                    <img src="/icon.png" alt="Learn Loop Logo" className="w-8 h-10 inline mr-2"/>
+                    <img src="/icon.png" alt="Learn Loop Logo" className="w-8 h-10 inline mr-2" />
                     Learn Loop
                 </Link>
                 {/* Botón de menú hamburguesa */}
@@ -21,7 +28,7 @@ export default function Header() {
                     onClick={toggleMenu}
                 >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
-                         xmlns="http://www.w3.org/2000/svg">
+                        xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
@@ -39,10 +46,10 @@ export default function Header() {
                 </nav>
 
                 <Link
-                    to="/signup"
+                    to={token != null ? "/dashboard" : "/signup"}
                     className="hidden md:inline-block bg-blue text-white px-4 py-2 rounded hover:bg-opacity-80 transition-colors"
                 >
-                    Sign Up
+                    {token != null ? "Dashboard" : "Sign Up"}
                 </Link>
             </div>
 
@@ -55,9 +62,11 @@ export default function Header() {
                         </li>
                         <li><Link to="#testimonials" className="hover:text-blue transition-colors">Testimonials</Link>
                         </li>
-                        <li><Link to="/signup"
-                                  className="block bg-blue text-white px-4 py-2 rounded hover:bg-opacity-80 transition-colors">Sign
-                            Up</Link></li>
+                        <li><Link to={token != null ? "/dashboard" : "/signup"}
+                            className="block bg-blue text-white px-4 py-2 rounded hover:bg-opacity-80 transition-colors">
+                            {token != null ? "Dashboard" : "Sign Up"}
+                        </Link>
+                        </li>
                     </ul>
                 </div>
             )}
