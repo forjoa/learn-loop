@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Book, MessageCircle, Settings, Bell, BadgePlus, ChevronRight, CirclePlus } from "lucide-react"
-import { Outlet } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import { NavLink } from "react-router-dom"
 import Avatar from "../ui/avatar"
 
@@ -23,6 +23,15 @@ const chats = [
 
 export default function DashboardLayout() {
     const [isChatOpen, setIsChatOpen] = useState(true)
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        const tokenL = localStorage.getItem('token')
+
+        if (!tokenL) {
+            navigate('/login')
+        }
+    }, [])
 
     return (
         <div className="flex h-screen bg-black text-white">
