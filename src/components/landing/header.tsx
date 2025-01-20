@@ -9,7 +9,7 @@ export default function Header() {
     }
 
     return (
-        <header className="bg-dark-grey py-4">
+        <header className="bg-dark-gray py-4">
             <div className="container mx-auto flex justify-between items-center px-4">
                 <Link to="/" className="text-2xl font-bold text-blue">
                     <img src="/icon.png" alt="Learn Loop Logo" className="w-8 h-10 inline mr-2"/>
@@ -28,7 +28,7 @@ export default function Header() {
 
                 {/* Navegación */}
                 <nav
-                    className={`md:flex items-center space-x-6 ${isMenuOpen ? 'block' : 'hidden'} absolute md:static top-16 left-0 w-full md:w-auto bg-dark-grey md:bg-transparent z-10 transition-all`}>
+                    className={`md:flex items-center space-x-6 ${isMenuOpen ? 'block' : 'hidden'} absolute md:static top-16 left-0 w-full md:w-auto bg-dark-gray md:bg-transparent z-10 transition-all`}>
                     <ul className="flex flex-col md:flex-row md:space-x-6 space-y-4 md:space-y-0 px-4 md:px-0">
                         <li><Link to="#features" className="hover:text-blue transition-colors">Features</Link></li>
                         <li><Link to="#how-it-works" className="hover:text-blue transition-colors">How It Works</Link>
@@ -48,7 +48,7 @@ export default function Header() {
 
             {/* Menú desplegable */}
             {isMenuOpen && (
-                <div className="md:hidden bg-dark-grey px-4 py-2">
+                <div className="md:hidden bg-dark-gray px-4 py-2">
                     <ul className="space-y-4">
                         <li><Link to="#features" className="hover:text-blue transition-colors">Features</Link></li>
                         <li><Link to="#how-it-works" className="hover:text-blue transition-colors">How It Works</Link>

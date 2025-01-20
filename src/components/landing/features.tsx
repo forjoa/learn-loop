@@ -20,15 +20,15 @@ export default function Features() {
     ]
 
     return (
-        <section id="features" className="py-20 bg-medium-grey">
+        <section id="features" className="py-20 bg-medium-gray">
             <div className="container mx-auto px-4">
                 <h2 className="text-3xl font-bold text-center mb-12">Powerful Features for Effective Teaching</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {features.map((feature, index) => (
-                        <div key={index} className="bg-dark-grey p-6 rounded-lg shadow-lg">
+                        <div key={index} className="bg-dark-gray p-6 rounded-lg shadow-lg">
                             <div className="mb-4">{feature.icon}</div>
                             <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                            <p className="text-grey">{feature.description}</p>
+                            <p className="text-gray">{feature.description}</p>
                         </div>
                     ))}
                 </div>

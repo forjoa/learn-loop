@@ -101,10 +101,10 @@ export default function SignUp() {
                 </div>
 
                 <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                    <div className="bg-dark-grey py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                    <div className="bg-dark-gray py-8 px-4 shadow sm:rounded-lg sm:px-10">
                         <form className="space-y-6" onSubmit={handleSubmit}>
                             <div>
-                                <label htmlFor="name" className="block text-sm font-medium text-grey">
+                                <label htmlFor="name" className="block text-sm font-medium text-gray">
                                     Full Name
                                 </label>
                                 <div className="mt-1">
@@ -114,7 +114,7 @@ export default function SignUp() {
                                         type="text"
                                         autoComplete="name"
                                         required
-                                        className="appearance-none block w-full px-3 py-2 border border-medium-grey rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-grey text-white"
+                                        className="appearance-none block w-full px-3 py-2 border border-medium-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-gray text-white"
                                         value={formData.name}
                                         onChange={handleChange}
                                     />
@@ -122,7 +122,7 @@ export default function SignUp() {
                             </div>
 
                             <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-grey">
+                                <label htmlFor="email" className="block text-sm font-medium text-gray">
                                     Email address
                                 </label>
                                 <div className="mt-1">
@@ -132,7 +132,7 @@ export default function SignUp() {
                                         type="email"
                                         autoComplete="email"
                                         required
-                                        className="appearance-none block w-full px-3 py-2 border border-medium-grey rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-grey text-white"
+                                        className="appearance-none block w-full px-3 py-2 border border-medium-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-gray text-white"
                                         value={formData.email}
                                         onChange={handleChange}
                                     />
@@ -140,7 +140,7 @@ export default function SignUp() {
                             </div>
 
                             <div>
-                                <label htmlFor="password" className="block text-sm font-medium text-grey">
+                                <label htmlFor="password" className="block text-sm font-medium text-gray">
                                     Password
                                 </label>
                                 <div className="mt-1">
@@ -150,7 +150,7 @@ export default function SignUp() {
                                         type="password"
                                         autoComplete="new-password"
                                         required
-                                        className="appearance-none block w-full px-3 py-2 border border-medium-grey rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-grey text-white"
+                                        className="appearance-none block w-full px-3 py-2 border border-medium-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-gray text-white"
                                         value={formData.password}
                                         onChange={handleChange}
                                     />
@@ -158,14 +158,14 @@ export default function SignUp() {
                             </div>
 
                             <div>
-                                <label htmlFor="role" className="block text-sm font-medium text-grey">
+                                <label htmlFor="role" className="block text-sm font-medium text-gray">
                                     Role
                                 </label>
                                 <div className="mt-1">
                                     <select
                                         id="role"
                                         name="role"
-                                        className="appearance-none block w-full px-3 py-2 border border-medium-grey rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-grey text-white"
+                                        className="appearance-none block w-full px-3 py-2 border border-medium-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-gray text-white"
                                         value={formData.role}
                                         onChange={handleChange}
                                     >
@@ -188,10 +188,10 @@ export default function SignUp() {
                         <div className="mt-6">
                             <div className="relative">
                                 <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-medium-grey"></div>
+                                    <div className="w-full border-t border-medium-gray"></div>
                                 </div>
                                 <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-dark-grey text-grey">
+                <span className="px-2 bg-dark-gray text-gray">
                   Already have an account?
                 </span>
                                 </div>
@@ -200,7 +200,7 @@ export default function SignUp() {
                             <div className="mt-6">
                                 <Link
                                     to="/login"
-                                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-blue bg-medium-grey hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue"
+                                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-blue bg-medium-gray hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue"
                                 >
                                     Log in
                                 </Link>
@@ -212,7 +212,7 @@ export default function SignUp() {
                 <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                     <Link
                         to="/"
-                        className="flex items-center justify-center text-sm text-grey hover:text-blue transition-colors"
+                        className="flex items-center justify-center text-sm text-gray hover:text-blue transition-colors"
                     >
                         <ArrowLeft className="mr-2 h-4 w-4"/>
                         Back to home
