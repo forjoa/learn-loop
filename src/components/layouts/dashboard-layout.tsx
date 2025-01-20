@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Book, MessageCircle, Settings, Bell, Send, ChevronRight, CirclePlus } from "lucide-react"
+import { Book, MessageCircle, Settings, Bell, BadgePlus, ChevronRight, CirclePlus } from "lucide-react"
 import { Outlet } from "react-router-dom"
 import { NavLink } from "react-router-dom"
 import Avatar from "../ui/avatar"
@@ -55,7 +55,7 @@ export default function DashboardLayout() {
                             `w-full grid place-items-center py-3 rounded-r-lg transition-all ${isActive ? "bg-blue hover:bg-opacity-80" : "hover:bg-medium-gray"}`
                         }
                     >
-                        <Send className="h-5 w-5" />
+                        <BadgePlus className="h-5 w-5" />
                     </NavLink>
                 </nav>
                 <button className="aspect-square rounded-none mb-4">
