@@ -10,6 +10,13 @@ interface FormattedMessages {
     isCurrentUser: boolean
 }
 
+interface RawMessage {
+    id: number,
+    sender: { name: string },
+    content: string,
+    senderId: number
+}
+
 const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: number, token: string, currentUserId: number, topicName: string }) => {
     const [messages, setMessages] = useState([])
     const [newMessage, setNewMessage] = useState("")
@@ -17,7 +24,7 @@ const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: number
     const fetchAndFormatMessages = async () => {
         try {
             const rawMessages = await getMessages(chatId, token)
-            const formattedMessages = rawMessages.map((msg: any) => ({
+            const formattedMessages = rawMessages.map((msg: RawMessage) => ({
                 id: msg.id,
                 sender: msg.sender.name,
                 content: msg.content,
