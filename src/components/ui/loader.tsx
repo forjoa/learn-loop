@@ -1,4 +1,4 @@
-import { motion, useCycle } from 'framer-motion'
+import { motion, useCycle, type Transition } from 'framer-motion'
 
 const loadingContainer = {
     width: '4rem',
@@ -35,9 +35,10 @@ const loadingCircleVariants = {
         y: '60%',
     },
 }
-const loadingCircleTransition = {
+const loadingCircleTransition: Transition = {
     duration: 0.4,
-    yoyo: Infinity,
+    repeat: Infinity,
+    repeatType: 'reverse',
     ease: 'easeInOut',
 }
 

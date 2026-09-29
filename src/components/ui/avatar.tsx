@@ -10,7 +10,8 @@ const Avatar = ({ names }: { names: string[] }) => {
         'bg-teal-500',
     ]
 
-    const randomColor = colors[Math.floor(Math.random() * colors.length)]
+    const seed = names.join('').split('').reduce((hash, char) => hash + char.charCodeAt(0), 0)
+    const randomColor = colors[seed % colors.length]
 
     const letters =
         names.length > 1
