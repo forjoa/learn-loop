@@ -2,7 +2,7 @@ import { env } from '../env'
 
 export const getMessages = async (chatId: string, token: string) => {
     try {
-        const response = await fetch(`${env.API}/messages/get?chatId=${chatId}`, {
+        const response = await fetch(`${env.API}/chats/${chatId}/messages`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,

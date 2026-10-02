@@ -2,7 +2,7 @@ import { env } from '../env'
 import type { DetailedTopic, TopicWithUsers } from '../../lib/types'
 
 export const getAllTopicsByUser = async (userId: string, token: string): Promise<TopicWithUsers[]> => {
-    const response = await fetch(`${env.API}/topics/getAllByUser?userId=${userId}`, {
+    const response = await fetch(`${env.API}/users/${userId}/topics`, {
         method: 'GET',
         headers: {
             Authorization: `Bearer ${token}`,
@@ -17,7 +17,7 @@ export const getAllTopicsByUser = async (userId: string, token: string): Promise
 }
 
 export const getTopicById = async (id: string, token: string): Promise<DetailedTopic> => {
-    const response = await fetch(`${env.API}/topics/topic?id=${id}`, {
+    const response = await fetch(`${env.API}/topics/${id}`, {
         method: 'GET',
         headers: {
             Authorization: `Bearer ${token}`,

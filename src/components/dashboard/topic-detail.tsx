@@ -4,7 +4,7 @@ import { ArrowLeft, Check, Clock, MessageCircle, UserPlus, Users, X } from 'luci
 import { Link, useParams } from 'react-router-dom'
 import { getTopicById } from '@/utils/get/topics'
 import { getPendingEnrollments } from '@/utils/get/enrollments'
-import { acceptEnrollment, denyEnrollment } from '@/utils/post/enrollments'
+import { updateEnrollmentStatus, type EnrollmentStatus } from '@/utils/post/enrollments'
 import { getUserId } from '@/utils/token'
 import { useDashboardChat } from '@/contexts/dashboard-chat'
 import { Button } from '@/components/ui/button'
@@ -33,13 +33,11 @@ export default function TopicDetail() {
     })
 
     const resolveRequest = useMutation({
-        mutationFn: ({ enrollmentId, action }: { enrollmentId: string; action: 'accept' | 'deny' }) =>
-            action === 'accept'
-                ? acceptEnrollment(enrollmentId, token as string)
-                : denyEnrollment(enrollmentId, token as string),
+        mutationFn: ({ enrollmentId, status }: { enrollmentId: string; status: EnrollmentStatus }) =>
+            updateEnrollmentStatus(enrollmentId, status, token as string),
         onSuccess: (_data, variables) => {
             queryClient.invalidateQueries({ queryKey: ['enrollments', 'pending', id] })
-            if (variables.action === 'accept') {
+            if (variables.status === 'APPROVED') {
                 queryClient.invalidateQueries({ queryKey: ['topic', id] })
             }
         },
@@ -108,14 +106,14 @@ export default function TopicDetail() {
                                             size="icon"
                                             variant="outline"
                                             disabled={resolveRequest.isPending}
-                                            onClick={() => resolveRequest.mutate({ enrollmentId: request.id, action: 'deny' })}
+                                            onClick={() => resolveRequest.mutate({ enrollmentId: request.id, status: 'REJECTED' })}
                                         >
                                             <X className="h-4 w-4 text-destructive" />
                                         </Button>
                                         <Button
                                             size="icon"
                                             disabled={resolveRequest.isPending}
-                                            onClick={() => resolveRequest.mutate({ enrollmentId: request.id, action: 'accept' })}
+                                            onClick={() => resolveRequest.mutate({ enrollmentId: request.id, status: 'APPROVED' })}
                                         >
                                             <Check className="h-4 w-4" />
                                         </Button>

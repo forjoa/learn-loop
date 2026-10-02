@@ -2,7 +2,7 @@ import { env } from '../env'
 import type { PendingEnrollment } from '../../lib/types'
 
 export const getPendingEnrollments = async (topicId: string, token: string): Promise<PendingEnrollment[]> => {
-    const response = await fetch(`${env.API}/enrollments/pending?topicId=${topicId}`, {
+    const response = await fetch(`${env.API}/topics/${topicId}/enrollments`, {
         method: 'GET',
         headers: {
             Authorization: `Bearer ${token}`,

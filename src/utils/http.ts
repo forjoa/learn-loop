@@ -22,5 +22,8 @@ const request = async <T>(path: string, options: RequestInit, token: string): Pr
 export const postJson = <T>(path: string, payload: unknown, token: string) =>
     request<T>(path, { method: 'POST', body: JSON.stringify(payload) }, token)
 
+export const patchJson = <T>(path: string, payload: unknown, token: string) =>
+    request<T>(path, { method: 'PATCH', body: JSON.stringify(payload) }, token)
+
 export const deleteJson = <T>(path: string, token: string) =>
     request<T>(path, { method: 'DELETE' }, token)

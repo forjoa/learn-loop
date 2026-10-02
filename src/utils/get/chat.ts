@@ -16,7 +16,7 @@ export interface Chat {
 
 export const getAllChats = async (userId: string, token: string): Promise<Chat[]> => {
     try {
-        const response = await fetch(`${env.API}/chats/getAll?userId=${userId}`, {
+        const response = await fetch(`${env.API}/users/${userId}/chats`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`

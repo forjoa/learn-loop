@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { gooeyToast as toast } from 'goey-toast'
 import { Bell, Check, Users, X } from 'lucide-react'
 import { getNotifications } from '@/utils/get/notifications'
-import { acceptEnrollment, denyEnrollment } from '@/utils/post/enrollments'
+import { updateEnrollmentStatus, type EnrollmentStatus } from '@/utils/post/enrollments'
 import { deleteNotification } from '@/utils/delete/notifications'
 import { getUserId } from '@/utils/token'
 import { Button } from '@/components/ui/button'
@@ -22,10 +22,8 @@ export default function Notifications() {
     const invalidate = () => queryClient.invalidateQueries({ queryKey: ['notifications', userId] })
 
     const resolveRequest = useMutation({
-        mutationFn: ({ enrollmentId, action }: { enrollmentId: string; action: 'accept' | 'deny' }) =>
-            action === 'accept'
-                ? acceptEnrollment(enrollmentId, token as string)
-                : denyEnrollment(enrollmentId, token as string),
+        mutationFn: ({ enrollmentId, status }: { enrollmentId: string; status: EnrollmentStatus }) =>
+            updateEnrollmentStatus(enrollmentId, status, token as string),
         onSuccess: invalidate,
         onError: (error) => toast.error(error.message),
     })
@@ -77,7 +75,7 @@ export default function Notifications() {
                                                 variant="outline"
                                                 disabled={resolveRequest.isPending}
                                                 onClick={() =>
-                                                    resolveRequest.mutate({ enrollmentId: notification.enrollmentId as string, action: 'deny' })
+                                                    resolveRequest.mutate({ enrollmentId: notification.enrollmentId as string, status: 'REJECTED' })
                                                 }
                                             >
                                                 <X className="h-4 w-4 text-destructive" />
@@ -86,7 +84,7 @@ export default function Notifications() {
                                                 size="icon"
                                                 disabled={resolveRequest.isPending}
                                                 onClick={() =>
-                                                    resolveRequest.mutate({ enrollmentId: notification.enrollmentId as string, action: 'accept' })
+                                                    resolveRequest.mutate({ enrollmentId: notification.enrollmentId as string, status: 'APPROVED' })
                                                 }
                                             >
                                                 <Check className="h-4 w-4" />

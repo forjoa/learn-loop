@@ -1,7 +1,6 @@
-import { postJson } from '../http'
+import { patchJson } from '../http'
 
-export const acceptEnrollment = (id: string, token: string) =>
-    postJson<{ message: string }>('/enrollments/accept', { id }, token)
+export type EnrollmentStatus = 'APPROVED' | 'REJECTED'
 
-export const denyEnrollment = (id: string, token: string) =>
-    postJson<{ message: string }>('/enrollments/deny', { id }, token)
+export const updateEnrollmentStatus = (id: string, status: EnrollmentStatus, token: string) =>
+    patchJson<{ message: string }>(`/enrollments/${id}`, { status }, token)
