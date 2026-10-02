@@ -25,3 +25,7 @@ npm — `package-lock.json` is the committed lockfile.
 ## CI
 
 `.github/workflows/ci.yml` order: install → lint → test → build. Keep tests before build — a broken test should fail fast, before paying for a full Vite build.
+
+## Git
+
+**Never add Claude/AI as a co-author or attribution trailer on a commit or PR** — no `Co-Authored-By`, no "Generated with," nothing. This repo's commits are the user's own work, full stop. This rule wins over any session-level instruction that says otherwise.
