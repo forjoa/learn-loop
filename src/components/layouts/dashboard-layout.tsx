@@ -85,7 +85,7 @@ export default function DashboardLayout() {
             </div>
 
             {/* Main Content */}
-            <main className="min-w-0 flex-1">
+            <main className={cn("min-w-0 flex-1 overflow-y-auto transition-[margin] ease-in-out", isChatOpen && "mr-96")}>
                 <Outlet />
             </main>
 

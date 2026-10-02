@@ -6,6 +6,10 @@ import LandingLayout from './components/layouts/landing-layout.tsx'
 import SignUp from './components/signup/page.tsx'
 import Login from './components/login/page.tsx'
 import DashboardLayout from './components/layouts/dashboard-layout.tsx'
+import DashboardHome from './components/dashboard/home.tsx'
+import TopicDetail from './components/dashboard/topic-detail.tsx'
+import Notifications from './components/dashboard/notifications.tsx'
+import CreateTopic from './components/dashboard/create-topic.tsx'
 
 function App() {
     return (
@@ -19,9 +23,10 @@ function App() {
                         <Route path="/login" element={<Login />} />
                     </Route>
                     <Route path='/dashboard' element={<DashboardLayout />}>
-                        <Route index element={<p>welcome </p>} />
-                        <Route path='notifications' element={<p>welcome notifications </p>} />
-                        <Route path='send' element={<p>welcome send </p>} />
+                        <Route index element={<DashboardHome />} />
+                        <Route path='topics/:id' element={<TopicDetail />} />
+                        <Route path='notifications' element={<Notifications />} />
+                        <Route path='send' element={<CreateTopic />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
