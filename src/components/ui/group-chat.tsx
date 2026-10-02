@@ -1,7 +1,12 @@
 import { FormEvent, useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { gooeyToast as toast } from "goey-toast"
+import { SendHorizontal } from "lucide-react"
 import Avatar from "./avatar"
 import { getMessages } from "../../utils/get/messages"
-import { SendHorizontal } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 interface FormattedMessages {
     id: number,
@@ -18,27 +23,24 @@ interface RawMessage {
 }
 
 const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: number, token: string, currentUserId: number, topicName: string }) => {
-    const [messages, setMessages] = useState([])
     const [newMessage, setNewMessage] = useState("")
 
-    const fetchAndFormatMessages = async () => {
-        try {
-            const rawMessages = await getMessages(chatId, token)
-            const formattedMessages = rawMessages.map((msg: RawMessage) => ({
-                id: msg.id,
-                sender: msg.sender.name,
-                content: msg.content,
-                isCurrentUser: msg.senderId === currentUserId,
-            }))
-            setMessages(formattedMessages)
-        } catch (error) {
-            console.error("Error al cargar los mensajes:", error)
-        }
-    }
+    const { data: messages = [], error: messagesError } = useQuery({
+        queryKey: ["messages", chatId],
+        queryFn: () =>
+            getMessages(chatId, token).then((rawMessages: RawMessage[]) =>
+                rawMessages.map((msg) => ({
+                    id: msg.id,
+                    sender: msg.sender.name,
+                    content: msg.content,
+                    isCurrentUser: msg.senderId === currentUserId,
+                })) as FormattedMessages[]
+            ),
+    })
 
     useEffect(() => {
-        fetchAndFormatMessages()
-    }, [chatId, token])
+        if (messagesError) toast.error("No se pudieron cargar los mensajes")
+    }, [messagesError])
 
     const handleSendMessage = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -50,30 +52,36 @@ const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: number
     }
 
     return (
-        <div className="flex items-center justify-center h-full bg-dark-gray mb-4">
-            <div className="w-full max-w-2xl h-full flex flex-col bg-medium-gray rounded-lg shadow-md mb-4">
+        <div className="flex h-full items-center justify-center">
+            <div className="mb-4 flex h-full w-full max-w-2xl flex-col rounded-lg border border-border bg-secondary shadow-md">
                 {/* Header */}
-                <div className="p-4 border-b border-gray">
+                <div className="border-b border-border p-4">
                     <h2 className="font-bold">{topicName}</h2>
                 </div>
                 {/* Chat Content */}
-                <div className="p-4 overflow-y-auto h-full">
+                <div className="h-full overflow-y-auto p-4">
                     <div className="space-y-4">
                         {messages.map((message: FormattedMessages) => (
                             <div
                                 key={message.id}
-                                className={`flex ${message.isCurrentUser ? "justify-end" : "justify-start"}`}
+                                className={cn("flex", message.isCurrentUser ? "justify-end" : "justify-start")}
                             >
                                 <div
-                                    className={`flex items-end space-x-2 ${message.isCurrentUser ? "flex-row-reverse space-x-reverse" : "flex-row"
-                                        }`}
+                                    className={cn(
+                                        "flex items-end space-x-2",
+                                        message.isCurrentUser ? "flex-row-reverse space-x-reverse" : "flex-row"
+                                    )}
                                 >
                                     <Avatar names={[message.sender]} />
                                     <div
-                                        className={`max-w-xs px-4 py-2 rounded-lg ${message.isCurrentUser ? "bg-blue text-white" : "bg-gray"
-                                            }`}
+                                        className={cn(
+                                            "max-w-xs rounded-lg px-4 py-2",
+                                            message.isCurrentUser
+                                                ? "bg-primary text-primary-foreground"
+                                                : "bg-muted text-foreground"
+                                        )}
                                     >
-                                        <p className="text-sm font-semibold mb-1">{message.sender}</p>
+                                        <p className="mb-1 text-sm font-semibold">{message.sender}</p>
                                         <p>{message.content}</p>
                                     </div>
                                 </div>
@@ -81,21 +89,18 @@ const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: number
                         ))}
                     </div>
                 </div>
-                <div className="p-4 border-t border-gray">
+                <div className="border-t border-border p-4">
                     <form className="flex gap-2" onSubmit={handleSendMessage}>
-                        <input
+                        <Input
                             type="text"
                             placeholder="Type here..."
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="bg-background"
                         />
-                        <button
-                            type="submit"
-                            className="px-4 py-2 bg-blue text-white rounded-md hover:bg-blue-600"
-                        >
+                        <Button type="submit" size="icon">
                             <SendHorizontal className="h-5 w-5" />
-                        </button>
+                        </Button>
                     </form>
                 </div>
             </div>

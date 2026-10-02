@@ -47,7 +47,7 @@ const Loader = () => {
 
     return (
         <div>
-            <div className="fixed w-full min-h-screen bg-black top-0 opacity-50 z-40"/>
+            <div className="fixed w-full min-h-screen bg-background top-0 opacity-50 z-40"/>
             <div className="flex fixed w-full justify-center items-center h-screen z-50 top-0">
                 <motion.div
                     style={loadingContainer}

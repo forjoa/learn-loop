@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Toaster } from 'sonner'
+import { GooeyToaster } from 'goey-toast'
 
 import Home from './components/landing/page.tsx'
 import LandingLayout from './components/layouts/landing-layout.tsx'
@@ -10,7 +10,7 @@ import DashboardLayout from './components/layouts/dashboard-layout.tsx'
 function App() {
     return (
         <>
-            <Toaster richColors={true} />
+            <GooeyToaster richColors={true} />
             <BrowserRouter>
                 <Routes>
                     <Route element={<LandingLayout />}>

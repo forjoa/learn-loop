@@ -1,9 +1,16 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
-import { toast } from 'sonner'
+import { gooeyToast as toast } from 'goey-toast'
+import { useMutation } from '@tanstack/react-query'
+import { motion } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
-import { env } from '../../utils/env.ts'
+import { register } from '../../utils/post/auth.ts'
 import Loader from '../ui/loader.tsx'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
 
 interface FormData {
     name: string;
@@ -19,8 +26,17 @@ export default function SignUp() {
         password: '',
         role: 'STUDENT',
     })
-    const [ loading, setLoading ] = useState(false)
     const navigate = useNavigate()
+
+    const registerMutation = useMutation({
+        mutationFn: register,
+        onSuccess: () => {
+            navigate('/login')
+        },
+        onError: (error) => {
+            toast.error(error.message)
+        },
+    })
 
     const handleChange = (
         e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
@@ -68,104 +84,75 @@ export default function SignUp() {
         e.preventDefault()
 
         if (validateForm()) {
-            console.log(formData)
-            setLoading(true)
-            fetch(`${env.API}/auth/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
-                .then(res => res.json())
-                .then(data => {
-                    console.log(data)
-                    if (!data.success && !data.data) {
-                        toast.error(data.message)
-                    } else {
-                        navigate('/login')
-                    }
-                    setLoading(false)
-                })
+            registerMutation.mutate(formData)
         }
     }
 
     return (
         <>
-            {loading && <Loader/>}
-            <div className="bg-black flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-                <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+            {registerMutation.isPending && <Loader/>}
+            <div className="flex min-h-[calc(100vh-72px)] flex-col justify-center bg-background px-4 py-16 sm:px-6 lg:px-8">
+                <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="sm:mx-auto sm:w-full sm:max-w-md"
+                >
+                    <h1 className="text-center text-3xl font-bold tracking-tight text-foreground">
                         Create your account
-                    </h2>
-                </div>
+                    </h1>
 
-                <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                    <div className="bg-dark-gray py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                        <form className="space-y-6" onSubmit={handleSubmit}>
-                            <div>
-                                <label htmlFor="name" className="block text-sm font-medium text-gray">
-                                    Full Name
-                                </label>
-                                <div className="mt-1">
-                                    <input
+                    <Card className="mt-8">
+                        <CardContent className="pt-6">
+                            <form className="space-y-5" onSubmit={handleSubmit}>
+                                <div className="space-y-2">
+                                    <Label htmlFor="name">Full Name</Label>
+                                    <Input
                                         id="name"
                                         name="name"
                                         type="text"
                                         autoComplete="name"
                                         required
-                                        className="appearance-none block w-full px-3 py-2 border border-medium-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-gray text-white"
                                         value={formData.name}
                                         onChange={handleChange}
                                     />
                                 </div>
-                            </div>
 
-                            <div>
-                                <label htmlFor="email" className="block text-sm font-medium text-gray">
-                                    Email address
-                                </label>
-                                <div className="mt-1">
-                                    <input
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Email address</Label>
+                                    <Input
                                         id="email"
                                         name="email"
                                         type="email"
                                         autoComplete="email"
                                         required
-                                        className="appearance-none block w-full px-3 py-2 border border-medium-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-gray text-white"
                                         value={formData.email}
                                         onChange={handleChange}
                                     />
                                 </div>
-                            </div>
 
-                            <div>
-                                <label htmlFor="password" className="block text-sm font-medium text-gray">
-                                    Password
-                                </label>
-                                <div className="mt-1">
-                                    <input
+                                <div className="space-y-2">
+                                    <Label htmlFor="password">Password</Label>
+                                    <Input
                                         id="password"
                                         name="password"
                                         type="password"
                                         autoComplete="new-password"
                                         required
-                                        className="appearance-none block w-full px-3 py-2 border border-medium-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-gray text-white"
                                         value={formData.password}
                                         onChange={handleChange}
                                     />
                                 </div>
-                            </div>
 
-                            <div>
-                                <label htmlFor="role" className="block text-sm font-medium text-gray">
-                                    Role
-                                </label>
-                                <div className="mt-1">
+                                <div className="space-y-2">
+                                    <Label htmlFor="role">Role</Label>
                                     <select
                                         id="role"
                                         name="role"
-                                        className="appearance-none block w-full px-3 py-2 border border-medium-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue focus:border-blue sm:text-sm bg-medium-gray text-white"
+                                        className={cn(
+                                            'flex h-10 w-full rounded-md border border-input bg-secondary px-3 py-2 text-sm text-foreground',
+                                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+                                        )}
                                         value={formData.role}
                                         onChange={handleChange}
                                     >
@@ -173,53 +160,40 @@ export default function SignUp() {
                                         <option value="TEACHER">Teacher</option>
                                     </select>
                                 </div>
-                            </div>
 
-                            <div>
-                                <button
-                                    type="submit"
-                                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue"
-                                >
+                                <Button type="submit" className="w-full" size="lg">
                                     Sign up
-                                </button>
-                            </div>
-                        </form>
-
-                        <div className="mt-6">
-                            <div className="relative">
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-medium-gray"></div>
-                                </div>
-                                <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-dark-gray text-gray">
-                  Already have an account?
-                </span>
-                                </div>
-                            </div>
+                                </Button>
+                            </form>
 
                             <div className="mt-6">
-                                <Link
-                                    to="/login"
-                                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-blue bg-medium-gray hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue"
-                                >
-                                    Log in
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                <div className="relative">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <div className="w-full border-t border-border" />
+                                    </div>
+                                    <div className="relative flex justify-center text-sm">
+                                        <span className="bg-card px-2 text-muted-foreground">
+                                            Already have an account?
+                                        </span>
+                                    </div>
+                                </div>
 
-                <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                                <Button asChild variant="secondary" className="mt-6 w-full">
+                                    <Link to="/login">Log in</Link>
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+
                     <Link
                         to="/"
-                        className="flex items-center justify-center text-sm text-gray hover:text-blue transition-colors"
+                        className="mt-8 flex items-center justify-center text-sm text-muted-foreground transition-colors hover:text-primary"
                     >
-                        <ArrowLeft className="mr-2 h-4 w-4"/>
+                        <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to home
                     </Link>
-                </div>
+                </motion.div>
             </div>
         </>
     )
 }
-

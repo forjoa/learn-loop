@@ -1,71 +1,75 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Menu, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const [token, setToken] = useState<string | null>()
-
-    useEffect(() => {
-        const tokenL = localStorage.getItem('token')
-
-        setToken(tokenL)
-    }, [])
+    const [token] = useState(() => localStorage.getItem('token'))
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen)
     }
 
+    const navLinks = [
+        { href: '#features', label: 'Features' },
+        { href: '#how-it-works', label: 'How It Works' },
+        { href: '#testimonials', label: 'Testimonials' },
+    ]
+
     return (
-        <header className="bg-dark-gray py-4">
-            <div className="container mx-auto flex justify-between items-center px-4">
-                <Link to="/" className="text-2xl font-bold text-blue">
-                    <img src="/icon.png" alt="Learn Loop Logo" className="w-8 h-10 inline mr-2" />
+        <header className="border-b border-border bg-card py-4">
+            <div className="container mx-auto flex items-center justify-between px-4">
+                <Link to="/" className="flex items-center text-2xl font-bold text-primary">
+                    <img src="/icon.png" alt="Learn Loop Logo" className="mr-2 inline h-10 w-8" />
                     Learn Loop
                 </Link>
-                {/* Botón de menú hamburguesa */}
+
                 <button
-                    className="md:hidden text-white focus:outline-none"
+                    className="text-foreground focus:outline-none md:hidden"
                     onClick={toggleMenu}
+                    aria-label="Toggle menu"
                 >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
+                    {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                 </button>
 
-                {/* Navegación */}
                 <nav
-                    className={`md:flex items-center space-x-6 ${isMenuOpen ? 'block' : 'hidden'} absolute md:static top-16 left-0 w-full md:w-auto bg-dark-gray md:bg-transparent z-10 transition-all`}>
-                    <ul className="flex flex-col md:flex-row md:space-x-6 space-y-4 md:space-y-0 px-4 md:px-0">
-                        <li><Link to="#features" className="hover:text-blue transition-colors">Features</Link></li>
-                        <li><Link to="#how-it-works" className="hover:text-blue transition-colors">How It Works</Link>
-                        </li>
-                        <li><Link to="#testimonials" className="hover:text-blue transition-colors">Testimonials</Link>
-                        </li>
+                    className={`absolute left-0 top-16 z-10 w-full bg-card transition-all md:static md:flex md:w-auto md:items-center md:space-x-6 md:bg-transparent ${isMenuOpen ? 'block' : 'hidden'}`}
+                >
+                    <ul className="flex flex-col space-y-4 px-4 md:flex-row md:space-x-6 md:space-y-0 md:px-0">
+                        {navLinks.map((link) => (
+                            <li key={link.href}>
+                                <Link to={link.href} className="text-foreground transition-colors hover:text-primary">
+                                    {link.label}
+                                </Link>
+                            </li>
+                        ))}
                     </ul>
                 </nav>
 
-                <Link
-                    to={token != null ? "/dashboard" : "/signup"}
-                    className="hidden md:inline-block bg-blue text-white px-4 py-2 rounded hover:bg-opacity-80 transition-colors"
-                >
-                    {token != null ? "Dashboard" : "Sign Up"}
-                </Link>
+                <Button asChild className="hidden md:inline-flex">
+                    <Link to={token != null ? '/dashboard' : '/signup'}>
+                        {token != null ? 'Dashboard' : 'Sign Up'}
+                    </Link>
+                </Button>
             </div>
 
-            {/* Menú desplegable */}
             {isMenuOpen && (
-                <div className="md:hidden bg-dark-gray px-4 py-2">
+                <div className="bg-card px-4 py-2 md:hidden">
                     <ul className="space-y-4">
-                        <li><Link to="#features" className="hover:text-blue transition-colors">Features</Link></li>
-                        <li><Link to="#how-it-works" className="hover:text-blue transition-colors">How It Works</Link>
-                        </li>
-                        <li><Link to="#testimonials" className="hover:text-blue transition-colors">Testimonials</Link>
-                        </li>
-                        <li><Link to={token != null ? "/dashboard" : "/signup"}
-                            className="block bg-blue text-white px-4 py-2 rounded hover:bg-opacity-80 transition-colors">
-                            {token != null ? "Dashboard" : "Sign Up"}
-                        </Link>
+                        {navLinks.map((link) => (
+                            <li key={link.href}>
+                                <Link to={link.href} className="text-foreground transition-colors hover:text-primary">
+                                    {link.label}
+                                </Link>
+                            </li>
+                        ))}
+                        <li>
+                            <Button asChild className="w-full">
+                                <Link to={token != null ? '/dashboard' : '/signup'}>
+                                    {token != null ? 'Dashboard' : 'Sign Up'}
+                                </Link>
+                            </Button>
                         </li>
                     </ul>
                 </div>
@@ -73,4 +77,3 @@ export default function Header() {
         </header>
     )
 }
-
