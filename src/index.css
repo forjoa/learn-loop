@@ -2,14 +2,16 @@
 @config "../tailwind.config.js";
 @import "tailwindcss";
 
-* {
-    font-family: 'Geist', serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+@layer base {
+    * {
+        font-family: 'Geist', serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-html {
-    background-color: #17181A;
-    color: #ffffff;
+    html {
+        background-color: #17181A;
+        color: #ffffff;
+    }
 }
