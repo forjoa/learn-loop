@@ -9,20 +9,20 @@ import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
 interface FormattedMessages {
-    id: number,
+    id: string,
     sender: string,
     content: string,
     isCurrentUser: boolean
 }
 
 interface RawMessage {
-    id: number,
+    id: string,
     sender: { name: string },
     content: string,
-    senderId: number
+    senderId: string
 }
 
-const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: number, token: string, currentUserId: number, topicName: string }) => {
+const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: string, token: string, currentUserId: string, topicName: string }) => {
     const [newMessage, setNewMessage] = useState("")
 
     const { data: messages = [], error: messagesError } = useQuery({

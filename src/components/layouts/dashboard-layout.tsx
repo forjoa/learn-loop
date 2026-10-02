@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useEffect } from "react"
 import { gooeyToast as toast } from "goey-toast"
 import { Book, MessageCircle, Settings, Bell, BadgePlus, ChevronRight } from "lucide-react"
 import { Outlet, useNavigate } from "react-router-dom"
@@ -7,59 +6,37 @@ import { NavLink } from "react-router-dom"
 import Avatar from "../ui/avatar"
 import GroupChat from "../ui/group-chat"
 import { getUserId } from "../../utils/token"
-import { getAllChats } from "../../utils/get/chat"
 import { cn } from "@/lib/utils"
+import { DashboardChatProvider, useDashboardChat } from "@/contexts/dashboard-chat"
 
-interface Chat {
-    chat_id: number
-    topic_id: number
-    topic_name: string
-    users: {
-        user_id: number
-        user_name: string
-    }[]
-}
+const navItemClass = ({ isActive }: { isActive: boolean }) =>
+    cn(
+        "grid w-full place-items-center rounded-r-lg py-3 transition-all",
+        isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent hover:text-foreground"
+    )
 
-interface RenderedChat {
-    id: number
-    topicName: string
-    users: string
-}
-
-export default function DashboardLayout() {
-    const [isChatOpen, setIsChatOpen] = useState(true)
-    const [selectedChat, setSelectedChat] = useState<RenderedChat | null>(null)
-    const [selectedTopicName, setSelectedTopicName] = useState("")
+function DashboardShell() {
     const navigate = useNavigate()
     const token = localStorage.getItem("token")
-    const userId = token ? getUserId(token) : null
+    const {
+        chats,
+        loadingChats,
+        error: chatsError,
+        isChatOpen,
+        setIsChatOpen,
+        selectedChatId,
+        selectedTopicName,
+        openChat,
+        closeChat,
+    } = useDashboardChat()
 
     useEffect(() => {
         if (!token) navigate("/login")
     }, [token, navigate])
 
-    const { data: chats = [], isLoading: loadingChats, error: chatsError } = useQuery({
-        queryKey: ["chats", userId],
-        queryFn: () =>
-            getAllChats(userId as number, token as string).then((data: Chat[]) =>
-                data.map((chat) => ({
-                    id: chat.chat_id,
-                    topicName: chat.topic_name,
-                    users: chat.users.map((user) => user.user_name).join(", "),
-                })) as RenderedChat[]
-            ),
-        enabled: !!token && !!userId,
-    })
-
     useEffect(() => {
         if (chatsError) toast.error(chatsError.message)
     }, [chatsError])
-
-    const navItemClass = ({ isActive }: { isActive: boolean }) =>
-        cn(
-            "grid w-full place-items-center rounded-r-lg py-3 transition-all",
-            isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent hover:text-foreground"
-        )
 
     return (
         <div className="flex h-screen bg-background text-foreground">
@@ -107,11 +84,8 @@ export default function DashboardLayout() {
                         <div className="border-b border-border p-4">
                             <div className="flex items-center justify-between">
                                 <h2 className="font-semibold">
-                                    {selectedChat ? (
-                                        <button
-                                            onClick={() => setSelectedChat(null)}
-                                            className="text-primary hover:underline"
-                                        >
+                                    {selectedChatId ? (
+                                        <button onClick={closeChat} className="text-primary hover:underline">
                                             Back to chats
                                         </button>
                                     ) : ("CHATS")}
@@ -122,25 +96,22 @@ export default function DashboardLayout() {
                             </div>
                         </div>
                         <div className="flex-1 px-4 pt-4">
-                            {!selectedChat ? (
+                            {!selectedChatId ? (
                                 <div className="space-y-2">
                                     {!loadingChats && chats.length > 0 ? (
                                         chats.map((chat) => (
                                             <button
                                                 key={chat.id}
                                                 className="flex w-full rounded-md p-4 transition-all hover:bg-accent"
-                                                onClick={() => {
-                                                    setSelectedChat(chat)
-                                                    setSelectedTopicName(chat.topicName)
-                                                }}
+                                                onClick={() => openChat(chat.id, chat.topicName)}
                                             >
                                                 <div className="flex items-start gap-3">
-                                                    <Avatar names={chat.users.split(", ")} />
+                                                    <Avatar names={chat.members.split(", ")} />
                                                     <div className="flex flex-col items-start">
                                                         <span className="text-sm font-medium">
-                                                            {chat.users.length > 20
-                                                                ? chat.users.substring(0, 15) + "..."
-                                                                : chat.users}
+                                                            {chat.members.length > 20
+                                                                ? chat.members.substring(0, 15) + "..."
+                                                                : chat.members}
                                                         </span>
                                                         <p className="mt-1 text-xs text-muted-foreground">{chat.topicName}</p>
                                                     </div>
@@ -155,9 +126,9 @@ export default function DashboardLayout() {
                                 </div>
                             ) : (
                                 <GroupChat
-                                    chatId={selectedChat.id}
-                                    token={localStorage.getItem("token") as string}
-                                    currentUserId={getUserId(localStorage.getItem("token") as string)}
+                                    chatId={selectedChatId}
+                                    token={token as string}
+                                    currentUserId={getUserId(token as string)}
                                     topicName={selectedTopicName}
                                 />
                             )}
@@ -166,5 +137,13 @@ export default function DashboardLayout() {
                 </div>
             </div>
         </div>
+    )
+}
+
+export default function DashboardLayout() {
+    return (
+        <DashboardChatProvider>
+            <DashboardShell />
+        </DashboardChatProvider>
     )
 }

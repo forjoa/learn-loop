@@ -1,6 +1,6 @@
-import { env } from "../env"
+import { env } from '../env'
 
-export const getMessages = async (chatId: number, token: string) => {
+export const getMessages = async (chatId: string, token: string) => {
     try {
         const response = await fetch(`${env.API}/messages/get?chatId=${chatId}`, {
             method: "GET",

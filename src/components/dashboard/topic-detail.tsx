@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { gooeyToast as toast } from 'goey-toast'
-import { ArrowLeft, Check, Clock, UserPlus, Users, X } from 'lucide-react'
+import { ArrowLeft, Check, Clock, MessageCircle, UserPlus, Users, X } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import { getTopicById } from '@/utils/get/topics'
 import { getPendingEnrollments } from '@/utils/get/enrollments'
 import { acceptEnrollment, denyEnrollment } from '@/utils/post/enrollments'
 import { getUserId } from '@/utils/token'
+import { useDashboardChat } from '@/contexts/dashboard-chat'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import Avatar from '@/components/ui/avatar'
@@ -15,6 +16,7 @@ export default function TopicDetail() {
     const token = localStorage.getItem('token')
     const userId = token ? getUserId(token) : null
     const queryClient = useQueryClient()
+    const { openChat } = useDashboardChat()
 
     const { data: topic, isLoading } = useQuery({
         queryKey: ['topic', id],
@@ -66,9 +68,21 @@ export default function TopicDetail() {
             </Link>
 
             <Card>
-                <CardContent className="pt-6">
-                    <h1 className="mb-2 text-2xl font-bold text-foreground">{topic.title}</h1>
-                    <p className="text-muted-foreground">{topic.description}</p>
+                <CardContent className="flex items-start justify-between gap-4 pt-6">
+                    <div>
+                        <h1 className="mb-2 text-2xl font-bold text-foreground">{topic.title}</h1>
+                        <p className="text-muted-foreground">{topic.description}</p>
+                    </div>
+                    {topic.chatId && (
+                        <Button
+                            variant="outline"
+                            className="shrink-0"
+                            onClick={() => openChat(topic.chatId as string, topic.title)}
+                        >
+                            <MessageCircle className="mr-2 h-4 w-4" />
+                            Abrir chat
+                        </Button>
+                    )}
                 </CardContent>
             </Card>
 

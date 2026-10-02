@@ -1,6 +1,20 @@
-import { env } from "../env"
+import { env } from '../env'
 
-export const getAllChats = async (userId: number, token: string) => {
+export interface ChatMember {
+    id: string
+    name: string
+}
+
+export interface Chat {
+    id: string
+    topicId: string
+    topicName: string
+    members: ChatMember[]
+    lastMessage: string | null
+    lastMessageDate: string | null
+}
+
+export const getAllChats = async (userId: string, token: string): Promise<Chat[]> => {
     try {
         const response = await fetch(`${env.API}/chats/getAll?userId=${userId}`, {
             method: 'GET',
@@ -13,8 +27,7 @@ export const getAllChats = async (userId: number, token: string) => {
             throw new Error('Error al obtener los chats');
         }
 
-        const data = await response.json();
-        return data
+        return response.json()
     } catch (error) {
         console.error('Error:', error);
         throw error
