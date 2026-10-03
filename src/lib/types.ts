@@ -61,3 +61,19 @@ export interface PendingEnrollment {
         photo: string | null
     }
 }
+
+export interface TopicPreview {
+    id: string
+    title: string
+    description: string
+    ownerId: string
+    ownerName: string
+    memberCount: number
+}
+
+export type EnrollmentStatusValue = 'PENDING' | 'APPROVED' | 'REJECTED'
+
+export interface EnrollmentStatusRecord {
+    id: string
+    status: EnrollmentStatusValue
+}

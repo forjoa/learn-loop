@@ -10,6 +10,7 @@ import DashboardHome from './components/dashboard/home.tsx'
 import TopicDetail from './components/dashboard/topic-detail.tsx'
 import Notifications from './components/dashboard/notifications.tsx'
 import CreateTopic from './components/dashboard/create-topic.tsx'
+import JoinTopic from './components/join/page.tsx'
 
 function App() {
     return (
@@ -28,6 +29,7 @@ function App() {
                         <Route path='notifications' element={<Notifications />} />
                         <Route path='send' element={<CreateTopic />} />
                     </Route>
+                    <Route path='/join/:topicId' element={<JoinTopic />} />
                 </Routes>
             </BrowserRouter>
         </>

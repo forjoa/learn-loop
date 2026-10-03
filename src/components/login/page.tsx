@@ -3,7 +3,7 @@ import { ArrowLeft } from 'lucide-react'
 import { gooeyToast as toast } from 'goey-toast'
 import { useMutation } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { login } from '../../utils/post/auth.ts'
 import Loader from '../ui/loader.tsx'
 import { Button } from '@/components/ui/button'
@@ -22,12 +22,14 @@ export default function Login() {
         password: '',
     })
     const navigate = useNavigate()
+    const [ searchParams ] = useSearchParams()
+    const redirectTo = searchParams.get('redirect') || '/dashboard'
 
     const loginMutation = useMutation({
         mutationFn: login,
         onSuccess: (data) => {
             localStorage.setItem('token', data.token)
-            navigate('/dashboard')
+            navigate(redirectTo)
         },
         onError: (error) => {
             toast.error(error.message)
@@ -144,7 +146,9 @@ export default function Login() {
                                 </div>
 
                                 <Button asChild variant="secondary" className="mt-6 w-full">
-                                    <Link to="/signup">Sign up</Link>
+                                    <Link to={searchParams.get('redirect') ? `/signup?redirect=${encodeURIComponent(redirectTo)}` : '/signup'}>
+                                        Sign up
+                                    </Link>
                                 </Button>
                             </div>
                         </CardContent>

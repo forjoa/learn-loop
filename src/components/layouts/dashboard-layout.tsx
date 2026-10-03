@@ -40,7 +40,6 @@ function DashboardShell() {
 
     return (
         <div className="flex h-screen bg-background text-foreground">
-            {/* Left Sidebar */}
             <div className="flex w-16 flex-col items-center justify-between border-r border-border">
                 <div className="p-4">
                     <img src="/icon.png" alt="Logo" />
@@ -61,12 +60,10 @@ function DashboardShell() {
                 </button>
             </div>
 
-            {/* Main Content */}
             <main className={cn("min-w-0 flex-1 overflow-y-auto transition-[margin] ease-in-out", isChatOpen && "mr-96")}>
                 <Outlet />
             </main>
 
-            {/* Right Chat Sidebar */}
             <div
                 className={cn(
                     "fixed right-0 top-0 h-full border-l border-border bg-card transition-all ease-in-out",
@@ -126,6 +123,7 @@ function DashboardShell() {
                                 </div>
                             ) : (
                                 <GroupChat
+                                    key={selectedChatId}
                                     chatId={selectedChatId}
                                     token={token as string}
                                     currentUserId={getUserId(token as string)}

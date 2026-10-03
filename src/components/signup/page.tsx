@@ -3,7 +3,7 @@ import { ArrowLeft } from 'lucide-react'
 import { gooeyToast as toast } from 'goey-toast'
 import { useMutation } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { register } from '../../utils/post/auth.ts'
 import Loader from '../ui/loader.tsx'
 import { Button } from '@/components/ui/button'
@@ -27,11 +27,14 @@ export default function SignUp() {
         role: 'STUDENT',
     })
     const navigate = useNavigate()
+    const [ searchParams ] = useSearchParams()
+    const redirectParam = searchParams.get('redirect')
+    const loginLink = redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : '/login'
 
     const registerMutation = useMutation({
         mutationFn: register,
         onSuccess: () => {
-            navigate('/login')
+            navigate(loginLink)
         },
         onError: (error) => {
             toast.error(error.message)
@@ -41,7 +44,7 @@ export default function SignUp() {
     const handleChange = (
         e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
     ) => {
-        const {name, value} = e.target as HTMLInputElement | HTMLSelectElement // Garantizamos que `e.target` tiene `name` y `value`
+        const {name, value} = e.target as HTMLInputElement | HTMLSelectElement
         setFormData((prevState) => ({
             ...prevState,
             [name]: value.trim(),
@@ -179,7 +182,7 @@ export default function SignUp() {
                                 </div>
 
                                 <Button asChild variant="secondary" className="mt-6 w-full">
-                                    <Link to="/login">Log in</Link>
+                                    <Link to={loginLink}>Log in</Link>
                                 </Button>
                             </div>
                         </CardContent>

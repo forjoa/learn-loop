@@ -1,14 +1,18 @@
+import { ChangeEvent, FormEvent, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { gooeyToast as toast } from 'goey-toast'
-import { ArrowLeft, Check, Clock, MessageCircle, UserPlus, Users, X } from 'lucide-react'
+import { ArrowLeft, Check, Clock, MessageCircle, Plus, UserPlus, Users, X } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import { getTopicById } from '@/utils/get/topics'
 import { getPendingEnrollments } from '@/utils/get/enrollments'
 import { updateEnrollmentStatus, type EnrollmentStatus } from '@/utils/post/enrollments'
+import { createPost } from '@/utils/post/posts'
 import { getUserId } from '@/utils/token'
 import { useDashboardChat } from '@/contexts/dashboard-chat'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import Avatar from '@/components/ui/avatar'
 
 export default function TopicDetail() {
@@ -17,6 +21,8 @@ export default function TopicDetail() {
     const userId = token ? getUserId(token) : null
     const queryClient = useQueryClient()
     const { openChat } = useDashboardChat()
+    const [ showPostForm, setShowPostForm ] = useState(false)
+    const [ postForm, setPostForm ] = useState({ title: '', content: '' })
 
     const { data: topic, isLoading } = useQuery({
         queryKey: ['topic', id],
@@ -43,6 +49,37 @@ export default function TopicDetail() {
         },
         onError: (error) => toast.error(error.message),
     })
+
+    const createPostMutation = useMutation({
+        mutationFn: () =>
+            createPost({ title: postForm.title, content: postForm.content, userId: userId as string, topicId: id as string }, token as string),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['topic', id] })
+            setPostForm({ title: '', content: '' })
+            setShowPostForm(false)
+        },
+        onError: (error) => toast.error(error.message),
+    })
+
+    const handlePostFieldChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target
+        setPostForm((prev) => ({ ...prev, [name]: value }))
+    }
+
+    const handlePostSubmit = (e: FormEvent) => {
+        e.preventDefault()
+
+        if (!postForm.title.trim()) {
+            toast.error('El título es obligatorio')
+            return
+        }
+        if (!postForm.content.trim()) {
+            toast.error('El contenido es obligatorio')
+            return
+        }
+
+        createPostMutation.mutate()
+    }
 
     if (isLoading) {
         return <p className="p-6 text-sm text-muted-foreground">Cargando...</p>
@@ -141,7 +178,50 @@ export default function TopicDetail() {
             </section>
 
             <section className="space-y-3">
-                <h2 className="text-sm font-semibold text-foreground">Contenido</h2>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-sm font-semibold text-foreground">Contenido</h2>
+                    {isOwner && (
+                        <Button size="sm" variant="outline" onClick={() => setShowPostForm((prev) => !prev)}>
+                            <Plus className="mr-1 h-4 w-4" />
+                            Nuevo post
+                        </Button>
+                    )}
+                </div>
+
+                {showPostForm && (
+                    <Card>
+                        <CardContent className="pt-6">
+                            <form className="space-y-4" onSubmit={handlePostSubmit}>
+                                <div className="space-y-2">
+                                    <Label htmlFor="post-title">Título</Label>
+                                    <Input
+                                        id="post-title"
+                                        name="title"
+                                        value={postForm.title}
+                                        onChange={handlePostFieldChange}
+                                        placeholder="p. ej. Ejercicios de la semana 3"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="post-content">Contenido</Label>
+                                    <textarea
+                                        id="post-content"
+                                        name="content"
+                                        rows={4}
+                                        value={postForm.content}
+                                        onChange={handlePostFieldChange}
+                                        placeholder="Escribe aquí el contenido que verán tus estudiantes"
+                                        className="flex w-full rounded-md border border-input bg-secondary px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                    />
+                                </div>
+                                <Button type="submit" disabled={createPostMutation.isPending}>
+                                    Publicar
+                                </Button>
+                            </form>
+                        </CardContent>
+                    </Card>
+                )}
+
                 {topic.posts.length > 0 ? (
                     <div className="space-y-2">
                         {topic.posts.map((post) => (
