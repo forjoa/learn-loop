@@ -1,11 +1,13 @@
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { gooeyToast as toast } from "goey-toast"
-import { Book, MessageCircle, Settings, Bell, BadgePlus, ChevronRight } from "lucide-react"
+import { useQuery } from "@tanstack/react-query"
+import { Book, MessageCircle, LogOut, Bell, BadgePlus, ChevronRight } from "lucide-react"
 import { Outlet, useNavigate } from "react-router-dom"
 import { NavLink } from "react-router-dom"
 import Avatar from "../ui/avatar"
 import GroupChat from "../ui/group-chat"
-import { getUserId } from "../../utils/token"
+import { clearSession, getUserId } from "../../utils/token"
+import { isTokenValid } from "../../utils/get/auth"
 import { cn } from "@/lib/utils"
 import { DashboardChatProvider, useDashboardChat } from "@/contexts/dashboard-chat"
 
@@ -30,9 +32,21 @@ function DashboardShell() {
         closeChat,
     } = useDashboardChat()
 
+    // refetched on window focus, so a token that expires while the tab is open is caught too
+    const { data: sessionValid } = useQuery({
+        queryKey: ["session", token],
+        queryFn: () => isTokenValid(token as string),
+        enabled: !!token,
+    })
+
+    const logout = useCallback(() => {
+        clearSession()
+        navigate("/login")
+    }, [navigate])
+
     useEffect(() => {
-        if (!token) navigate("/login")
-    }, [token, navigate])
+        if (!token || sessionValid === false) logout()
+    }, [token, sessionValid, logout])
 
     useEffect(() => {
         if (chatsError) toast.error(chatsError.message)
@@ -55,8 +69,13 @@ function DashboardShell() {
                         <BadgePlus className="h-5 w-5" />
                     </NavLink>
                 </nav>
-                <button className="mb-4 aspect-square rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
-                    <Settings className="h-5 w-5" />
+                <button
+                    onClick={logout}
+                    aria-label="Cerrar sesión"
+                    title="Cerrar sesión"
+                    className="mb-4 aspect-square rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                >
+                    <LogOut className="h-5 w-5" />
                 </button>
             </div>
 
