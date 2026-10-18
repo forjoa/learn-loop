@@ -1,8 +1,8 @@
-import { FormEvent, useEffect, useRef, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { gooeyToast as toast } from "goey-toast"
 import { SendHorizontal } from "lucide-react"
-import { io, type Socket } from "socket.io-client"
+import { io } from "socket.io-client"
 import Avatar from "./avatar"
 import { getMessages } from "../../utils/get/messages"
 import { sendMessage } from "../../utils/post/messages"
@@ -38,7 +38,6 @@ const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: string
     const [newMessage, setNewMessage] = useState("")
     const [liveMessages, setLiveMessages] = useState<FormattedMessages[]>([])
     const [sending, setSending] = useState(false)
-    const socketRef = useRef<Socket | null>(null)
 
     const { data: fetchedMessages = [], error: messagesError } = useQuery({
         queryKey: ["messages", chatId],
@@ -53,8 +52,7 @@ const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: string
     }, [messagesError])
 
     useEffect(() => {
-        const socket = io(env.API)
-        socketRef.current = socket
+        const socket = io(env.API, { auth: { token } })
         socket.emit("joinRoom", chatId)
 
         socket.on("chatMessage", (raw: RawMessage) => {
@@ -64,9 +62,8 @@ const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: string
 
         return () => {
             socket.disconnect()
-            socketRef.current = null
         }
-    }, [chatId, currentUserId])
+    }, [chatId, currentUserId, token])
 
     const messages = [...fetchedMessages, ...liveMessages]
 
@@ -80,7 +77,6 @@ const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: string
             const { data } = await sendMessage(chatId, content, currentUserId, token)
             setLiveMessages((prev) => [...prev, formatMessage(data, currentUserId)])
             setNewMessage("")
-            socketRef.current?.emit("chatMessage", { room: chatId, message: data })
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "No se pudo enviar el mensaje")
         } finally {
