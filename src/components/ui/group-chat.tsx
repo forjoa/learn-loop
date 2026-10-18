@@ -53,7 +53,8 @@ const GroupChat = ({ chatId, token, currentUserId, topicName }: { chatId: string
 
     useEffect(() => {
         const socket = io(env.API, { auth: { token } })
-        socket.emit("joinRoom", chatId)
+        // fires on every reconnect too, and the server forgets rooms when a socket drops
+        socket.on("connect", () => socket.emit("joinRoom", chatId))
 
         socket.on("chatMessage", (raw: RawMessage) => {
             if (raw.senderId === currentUserId) return
