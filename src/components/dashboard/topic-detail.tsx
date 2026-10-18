@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { gooeyToast as toast } from 'goey-toast'
-import { ArrowLeft, Check, Clock, MessageCircle, Plus, UserPlus, Users, X } from 'lucide-react'
+import { ArrowLeft, Check, Clock, Link2, MessageCircle, Plus, UserPlus, Users, X } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import { getTopicById } from '@/utils/get/topics'
 import { getPendingEnrollments } from '@/utils/get/enrollments'
@@ -81,6 +81,12 @@ export default function TopicDetail() {
         createPostMutation.mutate()
     }
 
+    const copyInviteLink = () =>
+        navigator.clipboard
+            .writeText(`${window.location.origin}/join/${id}`)
+            .then(() => toast.success('Enlace de invitación copiado'))
+            .catch(() => toast.error('No se pudo copiar el enlace'))
+
     if (isLoading) {
         return <p className="p-6 text-sm text-muted-foreground">Cargando...</p>
     }
@@ -108,16 +114,20 @@ export default function TopicDetail() {
                         <h1 className="mb-2 text-2xl font-bold text-foreground">{topic.title}</h1>
                         <p className="text-muted-foreground">{topic.description}</p>
                     </div>
-                    {topic.chatId && (
-                        <Button
-                            variant="outline"
-                            className="shrink-0"
-                            onClick={() => openChat(topic.chatId as string, topic.title)}
-                        >
-                            <MessageCircle className="mr-2 h-4 w-4" />
-                            Abrir chat
-                        </Button>
-                    )}
+                    <div className="flex shrink-0 gap-2">
+                        {isOwner && (
+                            <Button variant="outline" onClick={copyInviteLink}>
+                                <Link2 className="mr-2 h-4 w-4" />
+                                Invitar
+                            </Button>
+                        )}
+                        {topic.chatId && (
+                            <Button variant="outline" onClick={() => openChat(topic.chatId as string, topic.title)}>
+                                <MessageCircle className="mr-2 h-4 w-4" />
+                                Abrir chat
+                            </Button>
+                        )}
+                    </div>
                 </CardContent>
             </Card>
 
